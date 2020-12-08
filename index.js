@@ -19,9 +19,8 @@ const config = {
 };
 
 
-
 class App {
-    constructor({n, numbOfCell, playerAccount, app, h3, cellsBox, cellsBoxItem, }) {
+    constructor({ n, numbOfCell, playerAccount, app, h3, cellsBox, cellsBoxItem, }) {
         this.n = n;
         this.app = app;
         this.h3 = h3;
@@ -30,70 +29,65 @@ class App {
         this.cellsBoxItem = cellsBoxItem;
         this.playerAccount = playerAccount;
 
-
         this.data = [];
+        this.newData = [];
 
-        this.renderCells();
-
+        this.dataCreate();
         this.randomChangeCell();
+
+        this.render();
 
     };
 
-    renderCells() {
-        this.data[this.numbOfCell - 1] = "";
+    dataCreate() {
+        for (let i = 0; i <= this.numbOfCell - 1; i++) {
+            const id = i;
+            const value = "";
+            const item = { id, value };
+            this.data.push(item);
+        }
+    };
+
+    render() {
         const items = this.data;
 
         items.map(it => {
+            const { value } = it;
             const item = document.createElement('div');
+            const itemP = document.createElement('p');
+
             item.classList.add('cells-box__item');
-            item.innerText = it;
-            cellsBox.appendChild(item);
+            itemP.innerText = value;
+
+            item.appendChild(itemP);
+            this.cellsBox.appendChild(item);
         });
 
-
-
-        // for (let i = 0; i < this.numbOfCell; i++) {
-        //     const item = document.createElement('div');
-        //     item.classList.add('cells-box__item');
-        //     cellsBox.appendChild(item);
-        // }
-
-        this.h3.innerText = `Player account: ${this.playerAccount}`;
-
     };
 
-    getRandom(max, min){
-        return parseInt((Math.random() * (max - min) + min), 10);
+    getRandom(max, min) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     };
-
-
 
     randomChangeCell() {
-        // setInterval(()=> {
-        //
-        //     const min = 0;
-        //     const max = 4;
-        //     const maxId = [...this.cellsBox.childNodes].length - 1;
-        //
-        //
-        //     const id = this.getRandom(maxId, min);
-        //     const randomElement = this.cellsBox.childNodes[id];
-        //
-        //
-        //     if(randomElement.childNodes[0] === undefined) {
-        //
-        //         const numberElem = document.createElement('p');
-        //         const randomNumber = this.getRandom(max, min);
-        //         numberElem.innerText = randomNumber;
-        //         randomElement.appendChild(numberElem);
-        //
-        //     }
-        //
-        //
-        //
-        //
-        //
-        // }, 2000)
+        setInterval(() => {
+            const randomNumber = this.getRandom(3, 0);
+            const randomId = this.getRandom(this.numbOfCell, 0);
+
+            console.log(randomId);
+
+
+            this.data.find(it => {
+
+                if (it.id === randomId && it.value === "") {
+                    it.value = randomNumber;
+                }
+
+            });
+
+            this.cellsBox.innerHTML = "";
+            this.render();
+        }, 2000)
 
     }
 
