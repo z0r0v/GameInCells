@@ -1,0 +1,24 @@
+.app .cells-box {
+    width: 20%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 40px auto;
+    border: 1px solid black;
+}
+
+.app .cells-box .cells-box__item {
+    width: 33.33333333333333%;
+    height: 50px;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+
+.cells-box__item p {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.app .player-account {
+    text-align: center;
+}
