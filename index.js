@@ -1,58 +1,51 @@
-const app = document.querySelector('.app');
-const h3 = document.querySelector('.app h3');
-const cellsBox = document.querySelector('.cells-box');
-const cellsBoxItem = document.querySelector('.cells-box__item');
+let spedGameIndex = 2;
+let playerAccount = 0;
 
 const n = 27;
 const numbOfCell = 9;
-
-let playerAccount = 0;
+const app = document.querySelector('.app');
+const h3 = document.querySelector('.app h3');
+const cellsBox = document.querySelector('.cells-box');
 
 const config = {
+    spedGameIndex,
     n,
     numbOfCell,
     playerAccount,
     app,
     h3,
     cellsBox,
-    cellsBoxItem,
 };
 
-
 class App {
-    constructor({ n, numbOfCell, playerAccount, app, h3, cellsBox, cellsBoxItem, }) {
+    constructor({ spedGameIndex, n, numbOfCell, playerAccount, app, h3, cellsBox }) {
         this.n = n;
-
+        this.spedGameIndex = spedGameIndex;
         this.numbOfCell = numbOfCell;
         this.playerAccount = playerAccount;
-
-
         this.app = app;
         this.h3 = h3;
-
         this.cellsBox = cellsBox;
-
-        this.cellsBoxItem = cellsBoxItem;
 
         this.data = [];
         this.newData = [];
+        this.objRemove = [];
 
-        this.dataInterval;
-
+        this.dataInterval2;
+        this.dataUnterval3;
 
         this.appInit();
     };
 
     handlerCountUpClick = (evt) => {
-        if(evt.target.innerText === '') {
+        if (evt.target.innerText === '') {
             this.playerAccount = this.playerAccount - 3;
-            this.playerAccount < 0 ? this.renderGameOver() : this.renderCount();
-        }else {
+            this.playerAccount < 0 ? this.renderGameOverOrWin('Game Over') : this.renderCount();
+        } else {
             this.playerAccount = this.playerAccount + parseInt(evt.target.innerText);
             this.renderCount();
         }
     };
-
 
     getRandomNumbers(max, min) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -65,13 +58,15 @@ class App {
 
             items.splice(items.indexOf(item), 1);
             data[item?.id].value = value;
+
+            this.objRemove.push(item.id);
         }
     };
 
     randomChangeCell() {
         this.newData = [...this.data];
 
-        this.dataInterval = setInterval(() => {
+        this.dataInterval2 = setInterval(() => {
             const randomNumber = this.getRandomNumbers(3, 0);
 
             this.getRandomItemArray(this.newData, randomNumber, this.data);
@@ -79,13 +74,32 @@ class App {
             this.cellsBox.innerHTML = "";
             this.render(this.data);
 
-            // if(this.newData.length == 0) {
-            //     setTimeout(()=>{ this.renderGameOver();}, 2000)
-            // }
+        }, 2000 / this.spedGameIndex);
 
-        }, 2000);
+        this.dataInterval3 = setInterval(() => {
+            const firstRenderElem = this.data[this.objRemove[0]];
 
+            firstRenderElem.value = '';
+            this.newData.push(firstRenderElem);
+            this.objRemove.shift();
 
+            this.cellsBox.innerHTML = "";
+            this.render(this.data);
+        }, 3000 / this.spedGameIndex);
+
+        const overOrVinInterval = setInterval(() => {
+
+            if (this.newData.length == 0) {
+                this.renderGameOverOrWin('Game Over');
+                clearInterval(overOrVinInterval);
+            }
+            if (this.playerAccount >= this.n) {
+                this.renderGameOverOrWin('Congratulations on this victory');
+
+                clearInterval(overOrVinInterval);
+            }
+
+        }, 500);
     }
 
     dataCreate() {
@@ -123,23 +137,20 @@ class App {
         span.innerText = this.playerAccount;
     }
 
-    renderGameOver() {
+    renderGameOverOrWin(text) {
         const gageOver = document.createElement('h2');
-
-        clearInterval(this.dataInterval);
+        clearInterval(this.dataInterval2);
+        clearInterval(this.dataInterval3);
         this.app.innerHTML = '';
         this.app.appendChild(gageOver);
-        gageOver.innerText = 'Game Over';
+        gageOver.innerText = text;
     }
-
-
 
     appInit() {
         this.renderCount();
         this.dataCreate();
         this.randomChangeCell();
     }
-
 }
 
 new App(config);

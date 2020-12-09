@@ -5,7 +5,6 @@
     flex-wrap: wrap;
     margin: 40px auto;
     border: 1px solid black;
-
 }
 
 .app .cells-box .cells-box__item {
@@ -29,4 +28,15 @@
     margin-top: 150px;
     display: flex;
     justify-content: center;
+
+    animation-name: textAnimation;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes textAnimation {
+    0%   {font-size: 20px;}
+    25%  {font-size: 23px;}
+    50%  {font-size: 25px;}
+    100% {font-size: 23px;}
 }
