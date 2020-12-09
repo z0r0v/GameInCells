@@ -1,9 +1,11 @@
 .app .cells-box {
     width: 20%;
+    min-height: 150px;
     display: flex;
     flex-wrap: wrap;
     margin: 40px auto;
     border: 1px solid black;
+
 }
 
 .app .cells-box .cells-box__item {
