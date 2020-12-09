@@ -37,20 +37,22 @@ class App {
         this.data = [];
         this.newData = [];
 
+        this.dataInterval;
+
 
         this.appInit();
     };
 
     handlerCountUpClick = (evt) => {
-        this.playerAccount = this.playerAccount + parseInt(evt.target.innerText);
-        this.renderCount();
+        if(evt.target.innerText === '') {
+            this.playerAccount = this.playerAccount - 3;
+            this.playerAccount < 0 ? this.renderGameOver() : this.renderCount();
+        }else {
+            this.playerAccount = this.playerAccount + parseInt(evt.target.innerText);
+            this.renderCount();
+        }
     };
 
-    appInit() {
-        this.renderCount();
-        this.dataCreate();
-        this.randomChangeCell();
-    }
 
     getRandomNumbers(max, min) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -68,7 +70,8 @@ class App {
 
     randomChangeCell() {
         this.newData = [...this.data];
-        setInterval(() => {
+
+        this.dataInterval = setInterval(() => {
             const randomNumber = this.getRandomNumbers(3, 0);
 
             this.getRandomItemArray(this.newData, randomNumber, this.data);
@@ -76,7 +79,13 @@ class App {
             this.cellsBox.innerHTML = "";
             this.render(this.data);
 
-        }, 2000)
+            // if(this.newData.length == 0) {
+            //     setTimeout(()=>{ this.renderGameOver();}, 2000)
+            // }
+
+        }, 2000);
+
+
     }
 
     dataCreate() {
@@ -108,10 +117,27 @@ class App {
     };
 
     renderCount() {
-        const span = document.createElement('span')
+        const span = document.createElement('span');
         this.h3.innerText = 'Player Account: ';
         this.h3.appendChild(span);
         span.innerText = this.playerAccount;
+    }
+
+    renderGameOver() {
+        const gageOver = document.createElement('h2');
+
+        clearInterval(this.dataInterval);
+        this.app.innerHTML = '';
+        this.app.appendChild(gageOver);
+        gageOver.innerText = 'Game Over';
+    }
+
+
+
+    appInit() {
+        this.renderCount();
+        this.dataCreate();
+        this.randomChangeCell();
     }
 
 }

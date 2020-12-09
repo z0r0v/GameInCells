@@ -24,3 +24,9 @@
 .app .player-account {
     text-align: center;
 }
+
+.app h2 {
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+}
