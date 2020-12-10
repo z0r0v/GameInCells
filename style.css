@@ -4,6 +4,9 @@
     display: flex;
     flex-wrap: wrap;
     margin: 40px auto;
+}
+
+.app .cells-box.started {
     border: 1px solid black;
 }
 
@@ -34,8 +37,16 @@
 }
 
 @keyframes textAnimation {
-    0%   {font-size: 20px;}
-    25%  {font-size: 23px;}
-    50%  {font-size: 25px;}
-    100% {font-size: 23px;}
+    0% {
+        font-size: 20px;
+    }
+    25% {
+        font-size: 23px;
+    }
+    50% {
+        font-size: 25px;
+    }
+    100% {
+        font-size: 23px;
+    }
 }

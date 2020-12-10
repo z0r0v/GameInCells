@@ -1,7 +1,7 @@
 let spedGameIndex = 1;
 let playerAccount = 0;
 
-const n = 27;
+const n = 100;
 const numbOfCell = 9;
 const app = document.querySelector('.app');
 const h3 = document.querySelector('.app h3');
@@ -30,11 +30,10 @@ class App {
         this.data = [];
         this.newData = [];
         this.objRemove = [];
+        this.start = 0;
 
         this.dataInterval2;
         this.dataUnterval3;
-
-        this.start = 0;
 
         this.appInit();
     };
@@ -45,11 +44,21 @@ class App {
             this.playerAccount < 0 ? this.renderGameOverOrWin('Game Over') : this.renderCount();
         } else {
 
-            const elementId =  parseInt(evt.target.dataset.id);
+            const elementId = parseInt(evt.target.dataset.id);
             this.playerAccount = this.playerAccount + parseInt(evt.target.innerText);
 
             this.data[elementId].value = '';
             this.newData.push(this.data[elementId]);
+
+            this.objRemove.map((it,index, array) => {
+                    if(it.id == elementId) {
+                        array.splice(it, 1);
+                        array.push(it);
+                    }
+                }
+            );
+
+            console.log(  this.objRemove);
 
             this.render(this.data);
             this.renderCount();
@@ -73,12 +82,7 @@ class App {
         }
     };
 
-    randomChangeCell() {
-        this.newData = [...this.data];
-
-        this.start = new Date().getSeconds() + 2;
-
-
+    addCell() {
         this.dataInterval2 = setInterval(() => {
             const randomNumber = this.getRandomNumbers(3, 0);
 
@@ -87,17 +91,31 @@ class App {
             this.render(this.data);
 
         }, 2000 / this.spedGameIndex);
+    };
 
+    removeCell() {
+        // clear random
         this.dataInterval3 = setInterval(() => {
             const firstRenderElem = this.data[this.objRemove[0]];
-
             firstRenderElem.value = '';
             this.newData.push(firstRenderElem);
             this.objRemove.shift();
 
             this.render(this.data);
         }, 3000 / this.spedGameIndex);
+    };
 
+    randomChangeCell() {
+        this.newData = [...this.data];
+        this.start = new Date().getSeconds() + 2;
+
+            this.addCell();
+            this. removeCell();
+            this.checkedGameStatus();
+            this.checkedBonusStatus()
+    }
+
+    checkedGameStatus() {
         const overOrVinInterval = setInterval(() => {
             if (this.newData.length == 0) {
                 this.renderGameOverOrWin('Game Over');
@@ -111,19 +129,19 @@ class App {
             }
 
         }, 500);
+    };
 
-        const bonuseInterval = setInterval(()=> {
+    checkedBonusStatus() {
+        const bonusInterval = setInterval(() => {
             const end = new Date().getSeconds();
-            const sumTime =  end - this.start;
+            const sumTime = end - this.start;
 
-            if(sumTime <= 10 && this.playerAccount >= 10) {
+            if (sumTime <= 10 && this.playerAccount >= 10) {
                 this.playerAccount = this.playerAccount + 10;
                 this.renderCount();
-                clearInterval(bonuseInterval);
+                clearInterval(bonusInterval);
             }
         }, 500);
-
-
     }
 
     dataCreate() {
@@ -131,6 +149,7 @@ class App {
             const id = i;
             const value = "";
             const item = { id, value };
+
             this.data.push(item);
         }
     };
@@ -151,6 +170,7 @@ class App {
 
 
             item.appendChild(itemP);
+            this.cellsBox.classList.add('started');
             this.cellsBox.appendChild(item);
 
             item.addEventListener('click', this.handlerCountUpClick);
@@ -161,6 +181,7 @@ class App {
 
     renderCount() {
         const span = document.createElement('span');
+
         this.h3.innerText = 'Player Account: ';
         this.h3.appendChild(span);
         span.innerText = this.playerAccount;
@@ -168,6 +189,7 @@ class App {
 
     renderGameOverOrWin(text) {
         const gageOver = document.createElement('h2');
+
         clearInterval(this.dataInterval2);
         clearInterval(this.dataInterval3);
         this.app.innerHTML = '';
