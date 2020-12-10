@@ -14,7 +14,7 @@
     box-sizing: border-box;
 }
 
-.cells-box__item p {
+.app .cells-box__item p {
     display: flex;
     justify-content: center;
     align-content: center;
@@ -28,7 +28,6 @@
     margin-top: 150px;
     display: flex;
     justify-content: center;
-
     animation-name: textAnimation;
     animation-duration: 4s;
     animation-iteration-count: infinite;

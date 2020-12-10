@@ -1,4 +1,4 @@
-let spedGameIndex = 2;
+let spedGameIndex = 1;
 let playerAccount = 0;
 
 const n = 27;
@@ -34,6 +34,8 @@ class App {
         this.dataInterval2;
         this.dataUnterval3;
 
+        this.start = 0;
+
         this.appInit();
     };
 
@@ -42,8 +44,16 @@ class App {
             this.playerAccount = this.playerAccount - 3;
             this.playerAccount < 0 ? this.renderGameOverOrWin('Game Over') : this.renderCount();
         } else {
+
+            const elementId =  parseInt(evt.target.dataset.id);
             this.playerAccount = this.playerAccount + parseInt(evt.target.innerText);
+
+            this.data[elementId].value = '';
+            this.newData.push(this.data[elementId]);
+
+            this.render(this.data);
             this.renderCount();
+
         }
     };
 
@@ -66,12 +76,14 @@ class App {
     randomChangeCell() {
         this.newData = [...this.data];
 
+        this.start = new Date().getSeconds() + 2;
+
+
         this.dataInterval2 = setInterval(() => {
             const randomNumber = this.getRandomNumbers(3, 0);
 
             this.getRandomItemArray(this.newData, randomNumber, this.data);
 
-            this.cellsBox.innerHTML = "";
             this.render(this.data);
 
         }, 2000 / this.spedGameIndex);
@@ -83,14 +95,13 @@ class App {
             this.newData.push(firstRenderElem);
             this.objRemove.shift();
 
-            this.cellsBox.innerHTML = "";
             this.render(this.data);
         }, 3000 / this.spedGameIndex);
 
         const overOrVinInterval = setInterval(() => {
-
             if (this.newData.length == 0) {
                 this.renderGameOverOrWin('Game Over');
+
                 clearInterval(overOrVinInterval);
             }
             if (this.playerAccount >= this.n) {
@@ -100,6 +111,19 @@ class App {
             }
 
         }, 500);
+
+        const bonuseInterval = setInterval(()=> {
+            const end = new Date().getSeconds();
+            const sumTime =  end - this.start;
+
+            if(sumTime <= 10 && this.playerAccount >= 10) {
+                this.playerAccount = this.playerAccount + 10;
+                this.renderCount();
+                clearInterval(bonuseInterval);
+            }
+        }, 500);
+
+
     }
 
     dataCreate() {
@@ -112,6 +136,7 @@ class App {
     };
 
     render(data) {
+        this.cellsBox.innerHTML = "";
         const items = data;
         items.map(it => {
             const { value } = it;
@@ -120,6 +145,10 @@ class App {
 
             item.classList.add('cells-box__item');
             itemP.innerText = value;
+
+            item.dataset.id = it.id;
+            itemP.dataset.id = it.id;
+
 
             item.appendChild(itemP);
             this.cellsBox.appendChild(item);
